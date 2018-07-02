@@ -36,6 +36,8 @@
 
     <modules>
         <module>org.wso2.carbon.identity.remotefetch.core</module>
+        <module>org.wso2.carbon.identity.remotefetch.common</module>
+        <module>org.wso2.carbon.identity.remotefetch.git</module>
     </modules>
 
 </project>
