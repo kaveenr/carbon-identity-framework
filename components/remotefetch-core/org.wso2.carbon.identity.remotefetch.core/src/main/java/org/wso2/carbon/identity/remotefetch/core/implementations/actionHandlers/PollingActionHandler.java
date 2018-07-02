@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.remotefetch.git;
+package org.wso2.carbon.identity.remotefetch.core.implementations.actionHandlers;
 
 
 import org.apache.commons.logging.Log;
@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.remotefetch.common.ActionHandler;
 import org.wso2.carbon.identity.remotefetch.common.ConfigDeployer;
 import org.wso2.carbon.identity.remotefetch.common.RepositoryConnector;
+import org.wso2.carbon.identity.remotefetch.core.implementations.repositoryHandlers.GitRepositoryConnector;
 
 import java.io.File;
 import java.util.Date;
