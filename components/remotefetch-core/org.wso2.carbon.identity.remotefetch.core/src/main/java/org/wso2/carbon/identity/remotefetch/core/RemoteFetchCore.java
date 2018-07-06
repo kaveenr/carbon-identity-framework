@@ -32,20 +32,27 @@ public class RemoteFetchCore implements Runnable{
 
     @Override
     public void run() {
-        log.info("************************MAINRUN");
-        RemoteFetchConfiguration rfc = new RemoteFetchConfiguration();
-        HashMap<String,String> example = new HashMap<>();
-        example.put("foo","bar");
-
-        rfc.setRepositoryConnectorType("git");
-        rfc.setActionListenerType("polling");
-        rfc.setConfgiurationDeployerType("SP");
-        rfc.setRepositoryConnectorAttributes(example);
-        rfc.setActionListenerAttributes(example);
+//        RemoteFetchConfiguration rfc = new RemoteFetchConfiguration();
+//        HashMap<String,String> example = new HashMap<>();
+//        example.put("foo","bar");
+//
+//        rfc.setRepositoryConnectorType("git");
+//        rfc.setActionListenerType("polling");
+//        rfc.setConfgiurationDeployerType("SP");
+//        rfc.setRepositoryConnectorAttributes(example);
+//        rfc.setActionListenerAttributes(example);
 
         RemoteFetchConfigurationDAO rfd = new RemoteFetchConfigurationDAOImpl();
         try {
-            rfd.createRemoteFetchConfiguration(rfc,0);
+            rfd.getAllRemoteFetchConfigurations().forEach((RemoteFetchConfiguration config) ->{
+                System.out.println(config.toString());
+            });
+//            rfd.createRemoteFetchConfiguration(rfc,0);
+//            RemoteFetchConfiguration rfc = rfd.getRemoteFetchConfiguration(2);
+//            rfc.setActionListenerType("LKTEST");
+//            rfd.updateRemoteFetchConfiguration(rfc,0);
+//            System.out.println(rfd.getRemoteFetchConfiguration(2));
+//            rfd.deleteRemoteFetchConfiguration(2);
         } catch (RemoteFetchCoreException e) {
             e.printStackTrace();
         }
