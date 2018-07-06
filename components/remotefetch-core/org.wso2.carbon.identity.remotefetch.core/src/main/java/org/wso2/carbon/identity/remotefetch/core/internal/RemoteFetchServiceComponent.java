@@ -39,6 +39,7 @@ public class RemoteFetchServiceComponent {
     protected void activate(ComponentContext context) {
         try {
             this.remoteFetchCoreThread = new Thread(this.core);
+            log.info("**********################************########");
             remoteFetchCoreThread.start();
             if (log.isDebugEnabled()) {
                 log.debug("Identity RemoteFetchServiceComponent bundle is activated");

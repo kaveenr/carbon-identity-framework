@@ -18,10 +18,36 @@
 
 package org.wso2.carbon.identity.remotefetch.core;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
+import org.wso2.carbon.identity.remotefetch.core.dao.RemoteFetchConfigurationDAO;
+import org.wso2.carbon.identity.remotefetch.core.dao.impl.RemoteFetchConfigurationDAOImpl;
+
+import java.util.HashMap;
+
 public class RemoteFetchCore implements Runnable{
+
+    private Log log = LogFactory.getLog(RemoteFetchCore.class);
 
     @Override
     public void run() {
+        log.info("************************MAINRUN");
+        RemoteFetchConfiguration rfc = new RemoteFetchConfiguration();
+        HashMap<String,String> example = new HashMap<>();
+        example.put("foo","bar");
 
+        rfc.setRepositoryConnectorType("git");
+        rfc.setActionListenerType("polling");
+        rfc.setConfgiurationDeployerType("SP");
+        rfc.setRepositoryConnectorAttributes(example);
+        rfc.setActionListenerAttributes(example);
+
+        RemoteFetchConfigurationDAO rfd = new RemoteFetchConfigurationDAOImpl();
+        try {
+            rfd.createRemoteFetchConfiguration(rfc,0);
+        } catch (RemoteFetchCoreException e) {
+            e.printStackTrace();
+        }
     }
 }
