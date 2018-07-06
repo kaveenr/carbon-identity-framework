@@ -29,7 +29,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.json.JSONObject;
 
 /**
@@ -37,8 +42,19 @@ import org.json.JSONObject;
  */
 public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfigurationDAO {
 
-    public static final String CREATE_CONFIG = "INSERT IDN_RF_CONFIG (TENANT_ID, REPO_CONNECTOR_TYPE, ACTION_LISTENER_TYPE, " +
+    private static final String CREATE_CONFIG = "INSERT IDN_RF_CONFIG (TENANT_ID, REPO_CONNECTOR_TYPE, ACTION_LISTENER_TYPE, " +
             "CONFIG_DEPLOYER_TYPE, ATTRIBUTES_JSON) VALUES (?,?,?,?,?)";
+
+    private static final String LIST_CONFIGS = "SELECT ID, TENANT_ID, REPO_CONNECTOR_TYPE, ACTION_LISTENER_TYPE," +
+            " CONFIG_DEPLOYER_TYPE, ATTRIBUTES_JSON FROM `IDN_RF_CONFIG`";
+
+    private static final String GET_CONFIG = "SELECT ID, TENANT_ID, REPO_CONNECTOR_TYPE, ACTION_LISTENER_TYPE," +
+            " CONFIG_DEPLOYER_TYPE, ATTRIBUTES_JSON FROM `IDN_RF_CONFIG` WHERE ID = ?";
+
+    private static final String UPDATE_CONFIG = "UPDATE IDN_RF_CONFIG SET TENANT_ID = ?, REPO_CONNECTOR_TYPE = ?, " +
+            "ACTION_LISTENER_TYPE = ?, CONFIG_DEPLOYER_TYPE = ?, ATTRIBUTES_JSON = ? WHERE ID = ?";
+
+    private static final String DELETE_CONFIG = "DELETE FROM IDN_RF_CONFIG WHERE ID = ?";
 
     private Log log = LogFactory.getLog(RemoteFetchConfigurationDAOImpl.class);
 
@@ -58,11 +74,12 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
         PreparedStatement addStmnt = null;
         ResultSet result = null;
         try {
-            addStmnt = connection.prepareStatement(RemoteFetchConfigurationDAOImpl.CREATE_CONFIG);
+            addStmnt = connection.prepareStatement(RemoteFetchConfigurationDAOImpl.CREATE_CONFIG, Statement.RETURN_GENERATED_KEYS);
             addStmnt.setInt(1,tenantId);
             addStmnt.setString(2,configuration.getRepositoryConnectorType());
             addStmnt.setString(3,configuration.getActionListenerType());
             addStmnt.setString(4,configuration.getConfgiurationDeployerType());
+
             //Encode object attributes to JSON
             JSONObject attributesBundle = new JSONObject();
             attributesBundle.put("repositoryConnectorAttributes",configuration.getRepositoryConnectorAttributes());
@@ -102,8 +119,39 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
      */
     @Override
     public RemoteFetchConfiguration getRemoteFetchConfiguration(int configurationId) throws RemoteFetchCoreException {
+        Connection connection = IdentityDatabaseUtil.getDBConnection();
+        PreparedStatement selectStmnt = null;
+        ResultSet result = null;
+        try {
+            selectStmnt = connection.prepareStatement(RemoteFetchConfigurationDAOImpl.GET_CONFIG);
+            selectStmnt.setInt(1,configurationId);
+            result = selectStmnt.executeQuery();
 
-        return null;
+            if(result.next()){
+                JSONObject attributesBundle = new JSONObject(result.getString(6));
+                return new RemoteFetchConfiguration(
+                        result.getInt(1),
+                        result.getInt(2),
+                        result.getString(3),
+                        result.getString(4),
+                        result.getString(5),
+                        this.attributeToMap(attributesBundle.getJSONObject("repositoryConnectorAttributes")),
+                        this.attributeToMap(attributesBundle.getJSONObject("actionListenerAttributes")),
+                        this.attributeToMap(attributesBundle.getJSONObject("confgiurationDeployerAttributes")),
+                        this.attributeToMap(attributesBundle.getJSONObject("deploymentDetails"))
+                );
+            }else {
+                return null;
+            }
+
+        } catch (SQLException e){
+            throw new RemoteFetchCoreException("Error reading objects from database",e);
+        } finally {
+            IdentityDatabaseUtil.closeResultSet(result);
+            IdentityDatabaseUtil.closeStatement(selectStmnt);
+            IdentityDatabaseUtil.closeConnection(connection);
+
+        }
     }
 
     /**
@@ -113,7 +161,39 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
      */
     @Override
     public void updateRemoteFetchConfiguration(RemoteFetchConfiguration configuration, int tenantId) throws RemoteFetchCoreException {
+        Connection connection = IdentityDatabaseUtil.getDBConnection();
+        PreparedStatement updateStmnt = null;
+        ResultSet result = null;
+        try {
+            updateStmnt = connection.prepareStatement(RemoteFetchConfigurationDAOImpl.UPDATE_CONFIG);
+            updateStmnt.setInt(1,tenantId);
+            updateStmnt.setString(2,configuration.getRepositoryConnectorType());
+            updateStmnt.setString(3,configuration.getActionListenerType());
+            updateStmnt.setString(4,configuration.getConfgiurationDeployerType());
 
+            //Encode object attributes to JSON
+            JSONObject attributesBundle = new JSONObject();
+            attributesBundle.put("repositoryConnectorAttributes",configuration.getRepositoryConnectorAttributes());
+            attributesBundle.put("actionListenerAttributes",configuration.getActionListenerAttributes());
+            attributesBundle.put("confgiurationDeployerAttributes",configuration.getConfgiurationDeployerAttributes());
+            attributesBundle.put("deploymentDetails",configuration.getDeploymentDetails());
+
+            updateStmnt.setString(5,attributesBundle.toString(4));
+            updateStmnt.setInt(6,configuration.getRemoteFetchConfigurationId());
+            updateStmnt.execute();
+
+            if (!connection.getAutoCommit()) {
+                connection.commit();
+            }
+
+        } catch (SQLException e){
+            throw new RemoteFetchCoreException("Error creating new object",e);
+        } finally {
+            IdentityDatabaseUtil.closeResultSet(result);
+            IdentityDatabaseUtil.closeStatement(updateStmnt);
+            IdentityDatabaseUtil.closeConnection(connection);
+
+        }
     }
 
     /**
@@ -122,17 +202,79 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
      */
     @Override
     public void deleteRemoteFetchConfiguration(int configurationId) throws RemoteFetchCoreException {
+        Connection connection = IdentityDatabaseUtil.getDBConnection();
+        PreparedStatement deleteStmnt = null;
+        ResultSet result = null;
+        try {
+            deleteStmnt = connection.prepareStatement(RemoteFetchConfigurationDAOImpl.DELETE_CONFIG);
+            deleteStmnt.setInt(1,configurationId);
+            deleteStmnt.execute();
 
+            if (!connection.getAutoCommit()) {
+                connection.commit();
+            }
+
+        } catch (SQLException e){
+            throw new RemoteFetchCoreException("Error Deleting object",e);
+        } finally {
+            IdentityDatabaseUtil.closeResultSet(result);
+            IdentityDatabaseUtil.closeStatement(deleteStmnt);
+            IdentityDatabaseUtil.closeConnection(connection);
+
+        }
     }
 
     /**
-     * @param tenantId
+     *
      * @return
      * @throws RemoteFetchCoreException
      */
     @Override
-    public List<RemoteFetchConfiguration> getRemoteFetchConfigurationsByTenantId(int tenantId) throws RemoteFetchCoreException {
+    public List<RemoteFetchConfiguration> getAllRemoteFetchConfigurations() throws RemoteFetchCoreException {
+        Connection connection = IdentityDatabaseUtil.getDBConnection();
+        PreparedStatement selectStmnt = null;
+        ResultSet result = null;
+        List<RemoteFetchConfiguration> rfcList = new ArrayList<>();
+        try {
+            selectStmnt = connection.prepareStatement(RemoteFetchConfigurationDAOImpl.LIST_CONFIGS);
+            result = selectStmnt.executeQuery();
 
-        return null;
+            while (result.next()){
+
+                JSONObject attributesBundle = new JSONObject(result.getString(6));
+                RemoteFetchConfiguration rfc = new RemoteFetchConfiguration(
+                        result.getInt(1),
+                        result.getInt(2),
+                        result.getString(3),
+                        result.getString(4),
+                        result.getString(5),
+                        this.attributeToMap(attributesBundle.getJSONObject("repositoryConnectorAttributes")),
+                        this.attributeToMap(attributesBundle.getJSONObject("actionListenerAttributes")),
+                        this.attributeToMap(attributesBundle.getJSONObject("confgiurationDeployerAttributes")),
+                        this.attributeToMap(attributesBundle.getJSONObject("deploymentDetails"))
+                );
+                rfcList.add(rfc);
+            }
+
+            return rfcList;
+
+        } catch (SQLException e){
+            throw new RemoteFetchCoreException("Error reading objects from database",e);
+        } finally {
+            IdentityDatabaseUtil.closeResultSet(result);
+            IdentityDatabaseUtil.closeStatement(selectStmnt);
+            IdentityDatabaseUtil.closeConnection(connection);
+
+        }
+    }
+
+    private Map<String,String> attributeToMap(JSONObject attributes){
+        Map<String,String> attrMap = new HashMap<>();
+        attributes.keySet().forEach((Object key) -> {
+            if(key.getClass() == String.class){
+                attrMap.put((String) key, attributes.getString((String) key));
+            }
+        });
+        return attrMap;
     }
 }

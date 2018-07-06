@@ -27,6 +27,7 @@ import java.util.Map;
  */
 public class RemoteFetchConfiguration implements Serializable {
     private int remoteFetchConfigurationId = -1;
+    private int tenantId = 0;
     private String repositoryConnectorType = "";
     private String actionListenerType = "";
     private String confgiurationDeployerType = "";
@@ -36,6 +37,41 @@ public class RemoteFetchConfiguration implements Serializable {
     private Map<String,String> deploymentDetails = new HashMap<>();
 
     public RemoteFetchConfiguration() { // default implementation ignored
+    }
+
+    public RemoteFetchConfiguration(int remoteFetchConfigurationId, int tenantId, String repositoryConnectorType,
+                                    String actionListenerType, String confgiurationDeployerType,
+                                    Map<String, String> repositoryConnectorAttributes, Map<String,
+            String> actionListenerAttributes, Map<String, String> confgiurationDeployerAttributes,
+                                    Map<String, String> deploymentDetails) {
+
+        this.remoteFetchConfigurationId = remoteFetchConfigurationId;
+        this.tenantId = tenantId;
+        this.repositoryConnectorType = repositoryConnectorType;
+        this.actionListenerType = actionListenerType;
+        this.confgiurationDeployerType = confgiurationDeployerType;
+        this.repositoryConnectorAttributes = repositoryConnectorAttributes;
+        this.actionListenerAttributes = actionListenerAttributes;
+        this.confgiurationDeployerAttributes = confgiurationDeployerAttributes;
+        this.deploymentDetails = deploymentDetails;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getTenantId() {
+
+        return tenantId;
+    }
+
+    /**
+     *
+     * @param tenantId
+     */
+    public void setTenantId(int tenantId) {
+
+        this.tenantId = tenantId;
     }
 
     /**

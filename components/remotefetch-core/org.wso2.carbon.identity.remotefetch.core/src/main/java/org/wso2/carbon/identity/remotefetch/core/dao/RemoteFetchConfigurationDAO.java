@@ -62,10 +62,9 @@ public interface RemoteFetchConfigurationDAO {
 
     /**
      *
-     * @param tenantId
      * @return
      * @throws RemoteFetchCoreException
      */
-    List<RemoteFetchConfiguration> getRemoteFetchConfigurationsByTenantId(int tenantId) throws RemoteFetchCoreException;
+    List<RemoteFetchConfiguration> getAllRemoteFetchConfigurations() throws RemoteFetchCoreException;
 
 }
