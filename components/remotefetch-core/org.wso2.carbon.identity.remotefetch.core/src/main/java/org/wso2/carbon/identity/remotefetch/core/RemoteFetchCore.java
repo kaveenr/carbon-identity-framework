@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.remotefetch.core;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
 import org.wso2.carbon.identity.remotefetch.core.dao.RemoteFetchConfigurationDAO;
 import org.wso2.carbon.identity.remotefetch.core.dao.impl.RemoteFetchConfigurationDAOImpl;
@@ -32,27 +33,29 @@ public class RemoteFetchCore implements Runnable{
 
     @Override
     public void run() {
-//        RemoteFetchConfiguration rfc = new RemoteFetchConfiguration();
-//        HashMap<String,String> example = new HashMap<>();
-//        example.put("foo","bar");
-//
-//        rfc.setRepositoryConnectorType("git");
-//        rfc.setActionListenerType("polling");
-//        rfc.setConfgiurationDeployerType("SP");
-//        rfc.setRepositoryConnectorAttributes(example);
-//        rfc.setActionListenerAttributes(example);
+        RemoteFetchConfiguration rfc = new RemoteFetchConfiguration();
+
+        HashMap<String,String> example = new HashMap<>();
+        example.put("foo","bar");
+
+        rfc.setRepositoryConnectorType("git");
+        rfc.setActionListenerType("polling");
+        rfc.setConfgiurationDeployerType("SP");
+        rfc.setRepositoryConnectorAttributes(example);
+        rfc.setActionListenerAttributes(example);
+        rfc.setTenantId(0);
 
         RemoteFetchConfigurationDAO rfd = new RemoteFetchConfigurationDAOImpl();
         try {
+//            int id = rfd.createRemoteFetchConfiguration(rfc);
             rfd.getAllRemoteFetchConfigurations().forEach((RemoteFetchConfiguration config) ->{
                 System.out.println(config.toString());
             });
-//            rfd.createRemoteFetchConfiguration(rfc,0);
 //            RemoteFetchConfiguration rfc = rfd.getRemoteFetchConfiguration(2);
 //            rfc.setActionListenerType("LKTEST");
 //            rfd.updateRemoteFetchConfiguration(rfc,0);
 //            System.out.println(rfd.getRemoteFetchConfiguration(2));
-//            rfd.deleteRemoteFetchConfiguration(2);
+//            rfd.deleteRemoteFetchConfiguration(id);
         } catch (RemoteFetchCoreException e) {
             e.printStackTrace();
         }

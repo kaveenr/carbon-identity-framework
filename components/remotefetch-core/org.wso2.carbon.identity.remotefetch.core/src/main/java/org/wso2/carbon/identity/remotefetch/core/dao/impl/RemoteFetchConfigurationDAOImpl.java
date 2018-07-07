@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
 import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
-import org.wso2.carbon.identity.remotefetch.core.RemoteFetchConfiguration;
+import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.core.dao.RemoteFetchConfigurationDAO;
 
 import java.sql.Connection;
@@ -63,19 +63,19 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
     }
 
     /**
+     *
      * @param configuration
-     * @param tenantId
      * @return
      * @throws RemoteFetchCoreException
      */
     @Override
-    public int createRemoteFetchConfiguration(RemoteFetchConfiguration configuration, int tenantId) throws RemoteFetchCoreException {
+    public int createRemoteFetchConfiguration(RemoteFetchConfiguration configuration) throws RemoteFetchCoreException {
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement addStmnt = null;
         ResultSet result = null;
         try {
             addStmnt = connection.prepareStatement(RemoteFetchConfigurationDAOImpl.CREATE_CONFIG, Statement.RETURN_GENERATED_KEYS);
-            addStmnt.setInt(1,tenantId);
+            addStmnt.setInt(1,configuration.getTenantId());
             addStmnt.setString(2,configuration.getRepositoryConnectorType());
             addStmnt.setString(3,configuration.getActionListenerType());
             addStmnt.setString(4,configuration.getConfgiurationDeployerType());
@@ -85,7 +85,6 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
             attributesBundle.put("repositoryConnectorAttributes",configuration.getRepositoryConnectorAttributes());
             attributesBundle.put("actionListenerAttributes",configuration.getActionListenerAttributes());
             attributesBundle.put("confgiurationDeployerAttributes",configuration.getConfgiurationDeployerAttributes());
-            attributesBundle.put("deploymentDetails",configuration.getDeploymentDetails());
 
             addStmnt.setString(5,attributesBundle.toString(4));
             addStmnt.execute();
@@ -137,8 +136,7 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
                         result.getString(5),
                         this.attributeToMap(attributesBundle.getJSONObject("repositoryConnectorAttributes")),
                         this.attributeToMap(attributesBundle.getJSONObject("actionListenerAttributes")),
-                        this.attributeToMap(attributesBundle.getJSONObject("confgiurationDeployerAttributes")),
-                        this.attributeToMap(attributesBundle.getJSONObject("deploymentDetails"))
+                        this.attributeToMap(attributesBundle.getJSONObject("confgiurationDeployerAttributes"))
                 );
             }else {
                 return null;
@@ -155,18 +153,18 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
     }
 
     /**
+     *
      * @param configuration
-     * @param tenantId
      * @throws RemoteFetchCoreException
      */
     @Override
-    public void updateRemoteFetchConfiguration(RemoteFetchConfiguration configuration, int tenantId) throws RemoteFetchCoreException {
+    public void updateRemoteFetchConfiguration(RemoteFetchConfiguration configuration) throws RemoteFetchCoreException {
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement updateStmnt = null;
         ResultSet result = null;
         try {
             updateStmnt = connection.prepareStatement(RemoteFetchConfigurationDAOImpl.UPDATE_CONFIG);
-            updateStmnt.setInt(1,tenantId);
+            updateStmnt.setInt(1,configuration.getTenantId());
             updateStmnt.setString(2,configuration.getRepositoryConnectorType());
             updateStmnt.setString(3,configuration.getActionListenerType());
             updateStmnt.setString(4,configuration.getConfgiurationDeployerType());
@@ -176,7 +174,6 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
             attributesBundle.put("repositoryConnectorAttributes",configuration.getRepositoryConnectorAttributes());
             attributesBundle.put("actionListenerAttributes",configuration.getActionListenerAttributes());
             attributesBundle.put("confgiurationDeployerAttributes",configuration.getConfgiurationDeployerAttributes());
-            attributesBundle.put("deploymentDetails",configuration.getDeploymentDetails());
 
             updateStmnt.setString(5,attributesBundle.toString(4));
             updateStmnt.setInt(6,configuration.getRemoteFetchConfigurationId());
@@ -250,8 +247,7 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
                         result.getString(5),
                         this.attributeToMap(attributesBundle.getJSONObject("repositoryConnectorAttributes")),
                         this.attributeToMap(attributesBundle.getJSONObject("actionListenerAttributes")),
-                        this.attributeToMap(attributesBundle.getJSONObject("confgiurationDeployerAttributes")),
-                        this.attributeToMap(attributesBundle.getJSONObject("deploymentDetails"))
+                        this.attributeToMap(attributesBundle.getJSONObject("confgiurationDeployerAttributes"))
                 );
                 rfcList.add(rfc);
             }
