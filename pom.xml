@@ -1753,6 +1753,9 @@
         <guava.version>19.0</guava.version>
         <snakeyaml.version>1.11</snakeyaml.version>
         <h2database.version>1.2.140</h2database.version>
+
+        <!-- JGit Version -->
+        <org.jgit.version>4.11.0</org.jgit.version>
     </properties>
 
     <build>
