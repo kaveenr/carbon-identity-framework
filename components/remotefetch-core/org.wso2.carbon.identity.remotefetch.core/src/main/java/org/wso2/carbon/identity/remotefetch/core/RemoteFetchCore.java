@@ -135,7 +135,7 @@ public class RemoteFetchCore implements Runnable{
                 actionListener.iteration();
             });
             try {
-                Thread.sleep(1000 * 60);
+                Thread.currentThread().sleep(1000 * 60);
             } catch (InterruptedException e) {
                 log.info("Iteration thread interrupted");
             }
