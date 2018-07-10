@@ -26,8 +26,6 @@ import java.util.Map;
 
 public interface RemoteFetchComponentRegistery {
 
-    RemoteFetchComponentRegistery getInstance();
-
     void registerRepositoryManager(RepositoryManagerConnector repositoryManagerConnector);
     void registerConfigDeployer(ConfigDeployerConnector configDeployerConnector);
     void registerActionListener(ActionListenerConnector actionListenerConnector);

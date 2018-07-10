@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 
 public class RemoteFetchServiceComponentHolder {
     private static RemoteFetchServiceComponentHolder instance = new RemoteFetchServiceComponentHolder();
-    private RemoteFetchCore core;
     private RemoteFetchComponentRegistery remoteFetchComponentRegistery;
 
     public static RemoteFetchServiceComponentHolder getInstance() {
@@ -41,19 +40,9 @@ public class RemoteFetchServiceComponentHolder {
         return instance;
     }
 
-    public RemoteFetchCore getCore() {
-
-        return core;
-    }
-
     public RemoteFetchComponentRegistery getRemoteFetchComponentRegistery() {
 
         return remoteFetchComponentRegistery;
-    }
-
-    public void setCore(RemoteFetchCore core) {
-
-        this.core = core;
     }
 
     public void setRemoteFetchComponentRegistery(RemoteFetchComponentRegistery remoteFetchComponentRegistery) {
