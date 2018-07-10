@@ -113,7 +113,6 @@ public class RemoteFetchCore implements Runnable{
     }
 
     private void seedListeners(){
-        this.listenersList.clear();
         try {
             this.remoteFetchConfigDAO.getAllRemoteFetchConfigurations().forEach((RemoteFetchConfiguration config) ->{
                 try {
@@ -129,16 +128,9 @@ public class RemoteFetchCore implements Runnable{
 
     @Override
     public void run() {
-        seedListeners();
-        while (!Thread.interrupted()){
-            this.listenersList.forEach((ActionListener actionListener) -> {
-                actionListener.iteration();
-            });
-            try {
-                Thread.currentThread().sleep(1000 * 60);
-            } catch (InterruptedException e) {
-                log.info("Iteration thread interrupted");
-            }
-        }
+        if (listenersList.isEmpty()) seedListeners();
+        this.listenersList.forEach((ActionListener actionListener) -> {
+            actionListener.iteration();
+        });
     }
 }
