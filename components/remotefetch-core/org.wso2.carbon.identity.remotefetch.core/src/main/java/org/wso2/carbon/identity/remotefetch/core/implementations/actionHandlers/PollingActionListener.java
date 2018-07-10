@@ -56,7 +56,7 @@ public class PollingActionListener implements ActionListener {
     public void iteration() {
         Calendar nextIteration = Calendar.getInstance();
         nextIteration.add(Calendar.SECOND,this.frequency);
-        if ((lastIteration == null) || (lastIteration.after(nextIteration.getTime()))){
+        if ((lastIteration == null) || (lastIteration.before(nextIteration.getTime()))){
             try {
                 this.repo.fetchRepository();
             } catch (Exception e){
