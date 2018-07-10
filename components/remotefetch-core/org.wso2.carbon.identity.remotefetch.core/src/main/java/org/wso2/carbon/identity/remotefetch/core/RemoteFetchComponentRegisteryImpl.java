@@ -28,16 +28,9 @@ import java.util.Map;
 
 public class RemoteFetchComponentRegisteryImpl implements RemoteFetchComponentRegistery {
 
-    private static RemoteFetchComponentRegisteryImpl instance = new RemoteFetchComponentRegisteryImpl();
-
-    private HashMap<String,RepositoryManagerConnector> repositoryManagerConnectorMap;
-    private HashMap<String,ConfigDeployerConnector> configDeployerConnectorMap;
-    private HashMap<String,ActionListenerConnector> actionListenerConnectorMap;
-
-    @Override
-    public RemoteFetchComponentRegistery getInstance() {
-        return RemoteFetchComponentRegisteryImpl.instance;
-    }
+    private HashMap<String,RepositoryManagerConnector> repositoryManagerConnectorMap = new HashMap<>();
+    private HashMap<String,ConfigDeployerConnector> configDeployerConnectorMap = new HashMap<>();
+    private HashMap<String,ActionListenerConnector> actionListenerConnectorMap = new HashMap<>();
 
     @Override
     public void registerRepositoryManager(RepositoryManagerConnector repositoryManagerConnector) {
