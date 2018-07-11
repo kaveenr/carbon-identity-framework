@@ -18,6 +18,39 @@
 
 package org.wso2.carbon.identity.remotefetch.core.dao;
 
-public interface FileRevisionDAO {
+import org.wso2.carbon.identity.remotefetch.common.DeploymentRevision;
+
+import java.util.List;
+
+/**
+ * Interface used to access the data layer to store/update
+ */
+public interface DeploymentRevisionDAO {
+
+    /**
+     *
+     * @param deploymentRevision
+     * @return
+     */
+    int createDeploymentRevision(DeploymentRevision deploymentRevision);
+
+    /**
+     *
+     * @param deploymentRevision
+     */
+    void updateDeploymentRevision(DeploymentRevision deploymentRevision);
+
+    /**
+     *
+     * @param deploymentRevisionId
+     */
+    void deleteDeploymentRevision(int deploymentRevisionId);
+
+    /**
+     *
+     * @param remoteFetchConfigurationId
+     * @return
+     */
+    List<DeploymentRevision>  getDeploymentRevisionsByDeploymentFetchConfigurationId(int remoteFetchConfigurationId);
 
 }
