@@ -43,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 public class RemoteFetchServiceComponent {
     private static Log log = LogFactory.getLog(RemoteFetchServiceComponent.class);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private static BundleContext bundleContext;
 
     @Activate
     protected void activate(ComponentContext context) {
@@ -56,7 +55,7 @@ public class RemoteFetchServiceComponent {
 
         RemoteFetchServiceComponentHolder.getInstance().setRemoteFetchComponentRegistery(remoteFetchComponentRegistery);
 
-        bundleContext = context.getBundleContext();
+        BundleContext bundleContext = context.getBundleContext();
         bundleContext.registerService(RemoteFetchComponentRegistery.class.getName(),
                 RemoteFetchServiceComponentHolder.getInstance().getRemoteFetchComponentRegistery(),null);
 
