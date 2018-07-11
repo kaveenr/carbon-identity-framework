@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -79,7 +80,9 @@ public class DeploymentRevisionDAOImpl implements DeploymentRevisionDAO {
 
             return configId;
 
-        } catch (SQLException e){
+        } catch (SQLIntegrityConstraintViolationException e){
+            throw new RemoteFetchCoreException("Constraint violation, duplicated entry",e);
+        } catch(SQLException e){
             throw new RemoteFetchCoreException("Error creating new object",e);
         } finally {
             IdentityDatabaseUtil.closeResultSet(result);
@@ -114,6 +117,8 @@ public class DeploymentRevisionDAOImpl implements DeploymentRevisionDAO {
             }
 
 
+        } catch (SQLIntegrityConstraintViolationException e){
+            throw new RemoteFetchCoreException("Constraint violation, duplicated entry",e);
         } catch (SQLException e){
             throw new RemoteFetchCoreException("Error updating object",e);
         } finally {
