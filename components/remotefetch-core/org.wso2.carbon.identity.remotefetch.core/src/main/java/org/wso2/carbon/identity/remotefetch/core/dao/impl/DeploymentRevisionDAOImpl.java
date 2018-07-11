@@ -18,8 +18,6 @@
 
 package org.wso2.carbon.identity.remotefetch.core.dao.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
 import org.wso2.carbon.identity.remotefetch.common.DeploymentRevision;
 import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
