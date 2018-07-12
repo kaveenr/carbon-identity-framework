@@ -74,7 +74,7 @@ public class PollingActionListener implements ActionListener {
         }
     }
 
-    private void addRevisions(List<File> configPaths){
+    private void manageRevisions(List<File> configPaths){
         configPaths.forEach((File path) -> {
             String resolvedName = "";
             try {
@@ -137,7 +137,7 @@ public class PollingActionListener implements ActionListener {
             return;
         }
 
-        this.addRevisions(configFiles);
+        this.manageRevisions(configFiles);
 
         for(DeploymentRevision deploymentRevision : this.deploymentRevisionMap.values()){
             String newHash = "";
