@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchComponentRegistry;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfiguration;
+import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfigurationService;
 import org.wso2.carbon.identity.remotefetch.common.actionlistener.ActionListener;
 import org.wso2.carbon.identity.remotefetch.common.actionlistener.ActionListenerBuilder;
 import org.wso2.carbon.identity.remotefetch.common.actionlistener.ActionListenerBuilderException;
@@ -35,8 +36,6 @@ import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManager
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManagerBuilder;
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManagerBuilderException;
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManagerComponent;
-import org.wso2.carbon.identity.remotefetch.core.dao.RemoteFetchConfigurationDAO;
-import org.wso2.carbon.identity.remotefetch.core.dao.impl.CacheBackedRemoteFetchConfigurationDAOImpl;
 import org.wso2.carbon.identity.remotefetch.core.internal.RemoteFetchServiceComponentHolder;
 
 import java.util.HashMap;
@@ -49,14 +48,15 @@ public class RemoteFetchCore implements Runnable {
 
     private static final Log log = LogFactory.getLog(RemoteFetchCore.class);
 
-    private RemoteFetchConfigurationDAO remoteFetchConfigDAO;
+    private RemoteFetchConfigurationService fetchConfigurationService =
+            RemoteFetchServiceComponentHolder.getInstance().getRemoteFetchConfigurationService();
+
     private Map<Integer, RemoteFetchConfiguration> remoteFetchConfigurationMap = new HashMap<>();
     private Map<Integer, ActionListener> actionListenerMap = new HashMap<>();
     private RemoteFetchComponentRegistry componentRegistry;
 
     public RemoteFetchCore() {
 
-        this.remoteFetchConfigDAO = new CacheBackedRemoteFetchConfigurationDAOImpl();
         this.componentRegistry = RemoteFetchServiceComponentHolder.getInstance().getRemoteFetchComponentRegistry();
     }
 
@@ -95,7 +95,7 @@ public class RemoteFetchCore implements Runnable {
 
         // Get an instance of ConfigDeployer from registry.
         ConfigDeployerComponent configDeployerComponent = this.componentRegistry
-                .getConfigDeployerComponent(fetchConfig.getConfgiurationDeployerType());
+                .getConfigDeployerComponent(fetchConfig.getConfigurationDeployerType());
 
         if (configDeployerComponent != null) {
             try {
@@ -103,11 +103,11 @@ public class RemoteFetchCore implements Runnable {
                 configDeployer = configDeployerBuilder.addRemoteFetchConfig(fetchConfig).build();
 
             } catch (ConfigDeployerBuilderException e) {
-                throw new RemoteFetchCoreException("Unable to build " + fetchConfig.getConfgiurationDeployerType()
+                throw new RemoteFetchCoreException("Unable to build " + fetchConfig.getConfigurationDeployerType()
                         + " ConfigDeployer object", e);
             }
         } else {
-            throw new RemoteFetchCoreException("ConfigurationDeployer " + fetchConfig.getConfgiurationDeployerType()
+            throw new RemoteFetchCoreException("ConfigurationDeployer " + fetchConfig.getConfigurationDeployerType()
                     + " is not registered in RemoteFetchComponentRegistry");
         }
 
@@ -142,7 +142,7 @@ public class RemoteFetchCore implements Runnable {
     private void loadListeners() {
 
         try {
-            this.remoteFetchConfigDAO.getAllRemoteFetchConfigurations().forEach((RemoteFetchConfiguration config) -> {
+            this.fetchConfigurationService.getEnabledRemoteFetchConfigurationList().forEach((RemoteFetchConfiguration config) -> {
                 int configurationId = config.getRemoteFetchConfigurationId();
                 // Check if RemoteFetchConfig already exists in Map.
                 if (this.remoteFetchConfigurationMap.containsKey(configurationId)) {

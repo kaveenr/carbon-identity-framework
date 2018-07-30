@@ -30,24 +30,26 @@ public class RemoteFetchConfiguration implements Serializable {
 
     private int remoteFetchConfigurationId = -1;
     private int tenantId = 0;
+    private boolean isEnabled;
     private String repositoryManagerType = "";
     private String actionListenerType = "";
-    private String confgiurationDeployerType = "";
+    private String configurationDeployerType = "";
     private String userName = "";
     private Map<String, String> repositoryManagerAttributes = new HashMap<>();
     private Map<String, String> actionListenerAttributes = new HashMap<>();
-    private Map<String, String> confgiurationDeployerAttributes = new HashMap<>();
+    private Map<String, String> configurationDeployerAttributes = new HashMap<>();
 
-    public RemoteFetchConfiguration(int remoteFetchConfigurationId, int tenantId, String userName,
+    public RemoteFetchConfiguration(int remoteFetchConfigurationId, int tenantId, boolean isEnabled, String userName,
                                     String repositoryManagerType, String actionListenerType,
-                                    String confgiurationDeployerType) {
+                                    String configurationDeployerType) {
 
         this.remoteFetchConfigurationId = remoteFetchConfigurationId;
         this.tenantId = tenantId;
-        this.userName = userName;
+        this.isEnabled = isEnabled;
         this.repositoryManagerType = repositoryManagerType;
         this.actionListenerType = actionListenerType;
-        this.confgiurationDeployerType = confgiurationDeployerType;
+        this.configurationDeployerType = configurationDeployerType;
+        this.userName = userName;
     }
 
     /**
@@ -64,6 +66,22 @@ public class RemoteFetchConfiguration implements Serializable {
     public void setTenantId(int tenantId) {
 
         this.tenantId = tenantId;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isEnabled() {
+
+        return isEnabled;
+    }
+
+    /**
+     * @param enabled
+     */
+    public void setEnabled(boolean enabled) {
+
+        isEnabled = enabled;
     }
 
     /**
@@ -133,17 +151,17 @@ public class RemoteFetchConfiguration implements Serializable {
     /**
      * @return
      */
-    public String getConfgiurationDeployerType() {
+    public String getConfigurationDeployerType() {
 
-        return confgiurationDeployerType;
+        return configurationDeployerType;
     }
 
     /**
-     * @param confgiurationDeployerType
+     * @param configurationDeployerType
      */
-    public void setConfgiurationDeployerType(String confgiurationDeployerType) {
+    public void setConfigurationDeployerType(String configurationDeployerType) {
 
-        this.confgiurationDeployerType = confgiurationDeployerType;
+        this.configurationDeployerType = configurationDeployerType;
     }
 
     /**
@@ -181,17 +199,17 @@ public class RemoteFetchConfiguration implements Serializable {
     /**
      * @return
      */
-    public Map<String, String> getConfgiurationDeployerAttributes() {
+    public Map<String, String> getConfigurationDeployerAttributes() {
 
-        return confgiurationDeployerAttributes;
+        return configurationDeployerAttributes;
     }
 
     /**
-     * @param confgiurationDeployerAttributes
+     * @param configurationDeployerAttributes
      */
-    public void setConfgiurationDeployerAttributes(Map<String, String> confgiurationDeployerAttributes) {
+    public void setConfigurationDeployerAttributes(Map<String, String> configurationDeployerAttributes) {
 
-        this.confgiurationDeployerAttributes = confgiurationDeployerAttributes;
+        this.configurationDeployerAttributes = configurationDeployerAttributes;
     }
 
     @Override
@@ -200,27 +218,28 @@ public class RemoteFetchConfiguration implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RemoteFetchConfiguration)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         RemoteFetchConfiguration that = (RemoteFetchConfiguration) o;
         return remoteFetchConfigurationId == that.remoteFetchConfigurationId &&
                 tenantId == that.tenantId &&
+                isEnabled == that.isEnabled &&
                 Objects.equals(repositoryManagerType, that.repositoryManagerType) &&
                 Objects.equals(actionListenerType, that.actionListenerType) &&
-                Objects.equals(confgiurationDeployerType, that.confgiurationDeployerType) &&
+                Objects.equals(configurationDeployerType, that.configurationDeployerType) &&
                 Objects.equals(userName, that.userName) &&
                 Objects.equals(repositoryManagerAttributes, that.repositoryManagerAttributes) &&
                 Objects.equals(actionListenerAttributes, that.actionListenerAttributes) &&
-                Objects.equals(confgiurationDeployerAttributes, that.confgiurationDeployerAttributes);
+                Objects.equals(configurationDeployerAttributes, that.configurationDeployerAttributes);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(remoteFetchConfigurationId, tenantId, repositoryManagerType, actionListenerType,
-                confgiurationDeployerType, userName, repositoryManagerAttributes, actionListenerAttributes,
-                confgiurationDeployerAttributes);
+        return Objects.hash(remoteFetchConfigurationId, tenantId, isEnabled, repositoryManagerType, actionListenerType,
+                configurationDeployerType, userName, repositoryManagerAttributes, actionListenerAttributes,
+                configurationDeployerAttributes);
     }
 
     @Override
@@ -229,13 +248,14 @@ public class RemoteFetchConfiguration implements Serializable {
         return "RemoteFetchConfiguration{" +
                 "remoteFetchConfigurationId=" + remoteFetchConfigurationId +
                 ", tenantId=" + tenantId +
+                ", isEnabled=" + isEnabled +
                 ", repositoryManagerType='" + repositoryManagerType + '\'' +
                 ", actionListenerType='" + actionListenerType + '\'' +
-                ", confgiurationDeployerType='" + confgiurationDeployerType + '\'' +
+                ", configurationDeployerType='" + configurationDeployerType + '\'' +
                 ", userName='" + userName + '\'' +
                 ", repositoryManagerAttributes=" + repositoryManagerAttributes +
                 ", actionListenerAttributes=" + actionListenerAttributes +
-                ", confgiurationDeployerAttributes=" + confgiurationDeployerAttributes +
+                ", configurationDeployerAttributes=" + configurationDeployerAttributes +
                 '}';
     }
 }
