@@ -38,11 +38,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.remotefetch.common</artifactId>
             <scope>compile</scope>
@@ -124,7 +119,7 @@
                             org.apache.commons.io; version="${commons.io.wso2.osgi.version.range}",
                             org.apache.commons.collections; version="${commons-collections.wso2.osgi.version.range}",
 
-                            org.wso2.carbon.identity.core.util;resolution:=optional;version="${carbon.identity.package.import.version.range}",
+                            org.wso2.carbon.identity.core.*; version="${carbon.identity.package.import.version.range}",
                             org.wso2.carbon.identity.application.mgt;version="${carbon.identity.package.import.version.range}",
                             org.wso2.carbon.identity.application.common;version="${carbon.identity.package.import.version.range}",
                             org.wso2.carbon.identity.application.common.cache;version="${carbon.identity.package.import.version.range}",
