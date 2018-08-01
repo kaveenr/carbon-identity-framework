@@ -20,9 +20,12 @@ package org.wso2.carbon.identity.remotefetch.core;
 
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfigurationService;
+import org.wso2.carbon.identity.remotefetch.common.ValidationReport;
 import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
 import org.wso2.carbon.identity.remotefetch.core.dao.RemoteFetchConfigurationDAO;
 import org.wso2.carbon.identity.remotefetch.core.dao.impl.RemoteFetchConfigurationDAOImpl;
+import org.wso2.carbon.identity.remotefetch.core.internal.RemoteFetchServiceComponentHolder;
+import org.wso2.carbon.identity.remotefetch.core.util.RemoteFetchConfigurationValidator;
 
 import java.util.List;
 
@@ -31,26 +34,48 @@ import java.util.List;
  */
 public class RemoteFetchConfigurationServiceImpl implements RemoteFetchConfigurationService {
 
-    RemoteFetchConfigurationDAO fetchConfigurationDAO = new RemoteFetchConfigurationDAOImpl();
+    private RemoteFetchConfigurationDAO fetchConfigurationDAO = new RemoteFetchConfigurationDAOImpl();
 
     /**
      * @param fetchConfiguration
+     * @return
      * @throws RemoteFetchCoreException
      */
     @Override
-    public void addRemoteFetchConfiguration(RemoteFetchConfiguration fetchConfiguration) throws RemoteFetchCoreException {
+    public ValidationReport addRemoteFetchConfiguration(RemoteFetchConfiguration fetchConfiguration) throws RemoteFetchCoreException {
 
-        this.fetchConfigurationDAO.createRemoteFetchConfiguration(fetchConfiguration);
+        RemoteFetchConfigurationValidator validator =
+                new RemoteFetchConfigurationValidator(RemoteFetchServiceComponentHolder.getInstance()
+                        .getRemoteFetchComponentRegistry(), fetchConfiguration);
+
+        ValidationReport validationReport = validator.validate();
+
+        if (validationReport.getValidationStatus() == ValidationReport.VALIDATION_STATUS.PASSED) {
+            this.fetchConfigurationDAO.createRemoteFetchConfiguration(fetchConfiguration);
+        }
+
+        return validationReport;
     }
 
     /**
      * @param fetchConfiguration
+     * @return
      * @throws RemoteFetchCoreException
      */
     @Override
-    public void updateRemoteFetchConfiguration(RemoteFetchConfiguration fetchConfiguration) throws RemoteFetchCoreException {
+    public ValidationReport updateRemoteFetchConfiguration(RemoteFetchConfiguration fetchConfiguration) throws RemoteFetchCoreException {
 
-        this.fetchConfigurationDAO.updateRemoteFetchConfiguration(fetchConfiguration);
+        RemoteFetchConfigurationValidator validator =
+                new RemoteFetchConfigurationValidator(RemoteFetchServiceComponentHolder.getInstance()
+                        .getRemoteFetchComponentRegistry(), fetchConfiguration);
+
+        ValidationReport validationReport = validator.validate();
+
+        if (validationReport.getValidationStatus() == ValidationReport.VALIDATION_STATUS.PASSED) {
+            this.fetchConfigurationDAO.updateRemoteFetchConfiguration(fetchConfiguration);
+        }
+
+        return validationReport;
     }
 
     /**

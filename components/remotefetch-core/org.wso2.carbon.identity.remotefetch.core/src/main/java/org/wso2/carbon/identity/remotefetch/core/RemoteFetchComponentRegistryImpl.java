@@ -23,7 +23,9 @@ import org.wso2.carbon.identity.remotefetch.common.actionlistener.ActionListener
 import org.wso2.carbon.identity.remotefetch.common.configdeployer.ConfigDeployerComponent;
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManagerComponent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class RemoteFetchComponentRegistryImpl implements RemoteFetchComponentRegistry {
 
@@ -113,5 +115,32 @@ public class RemoteFetchComponentRegistryImpl implements RemoteFetchComponentReg
     public ActionListenerComponent getActionListenerComponent(String identifier) {
 
         return this.actionListenerComponentMap.getOrDefault(identifier, null);
+    }
+
+    /**
+     * @return list all RepositoryManagerComponents
+     */
+    @Override
+    public List<RepositoryManagerComponent> getRepositoryManagerComponentList() {
+
+        return new ArrayList(this.repositoryManagerComponentMap.values());
+    }
+
+    /**
+     * @return list all ConfigDeployerComponents
+     */
+    @Override
+    public List<ConfigDeployerComponent> getConfigDeployerComponentList() {
+
+        return new ArrayList(this.configDeployerComponentMap.values());
+    }
+
+    /**
+     * @return list all ActionListenerComponents
+     */
+    @Override
+    public List<ActionListenerComponent> getActionListenerComponentList() {
+
+        return new ArrayList(this.actionListenerComponentMap.values());
     }
 }

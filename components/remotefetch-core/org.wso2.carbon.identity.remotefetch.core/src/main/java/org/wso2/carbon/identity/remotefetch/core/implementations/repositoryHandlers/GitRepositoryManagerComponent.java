@@ -18,8 +18,12 @@
 
 package org.wso2.carbon.identity.remotefetch.core.implementations.repositoryHandlers;
 
+import org.wso2.carbon.identity.remotefetch.common.ui.UIField;
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManagerBuilder;
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManagerComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GitRepositoryManagerComponent implements RepositoryManagerComponent {
 
@@ -33,5 +37,32 @@ public class GitRepositoryManagerComponent implements RepositoryManagerComponent
     public String getIdentifier() {
 
         return "GIT";
+    }
+
+    @Override
+    public String getName() {
+
+        return "Standard Git Repository";
+    }
+
+    @Override
+    public List<UIField> getUIFields() {
+
+        ArrayList<UIField> fieldList = new ArrayList();
+
+        fieldList.add(new UIField(
+                "uri", UIField.FIELD_TYPES.TEXT_BOX, "Git Repository URI", "http url of the repo",
+                "((\\w+:\\/\\/)[-a-zA-Z0-9:@;?&=\\/%\\+\\.\\*!'\\(\\),\\$_\\{\\}\\^~\\[\\]`#|]+)",
+                "", true, false, false
+
+        ));
+        fieldList.add(new UIField(
+                "branch", UIField.FIELD_TYPES.TEXT_BOX, "branch", "branch to be pulled",
+                "",
+                "master", true, false, false
+
+        ));
+
+        return fieldList;
     }
 }

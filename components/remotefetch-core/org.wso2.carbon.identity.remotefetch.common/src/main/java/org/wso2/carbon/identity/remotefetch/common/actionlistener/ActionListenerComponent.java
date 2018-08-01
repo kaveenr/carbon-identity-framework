@@ -18,6 +18,10 @@
 
 package org.wso2.carbon.identity.remotefetch.common.actionlistener;
 
+import org.wso2.carbon.identity.remotefetch.common.ui.UIField;
+
+import java.util.List;
+
 /**
  * Interface to implement a reference to the builder of the component
  */
@@ -36,4 +40,18 @@ public interface ActionListenerComponent {
      * @return
      */
     String getIdentifier();
+
+    /**
+     * Returns screen name of the component
+     *
+     * @return
+     */
+    String getName();
+
+    /**
+     * Returns list of UIFields to configure UI
+     *
+     * @return
+     */
+    List<UIField> getUIFields();
 }

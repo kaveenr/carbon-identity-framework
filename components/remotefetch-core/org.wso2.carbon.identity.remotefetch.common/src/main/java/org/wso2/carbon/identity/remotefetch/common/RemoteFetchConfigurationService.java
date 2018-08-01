@@ -28,16 +28,20 @@ import java.util.List;
 public interface RemoteFetchConfigurationService {
 
     /**
+     *
      * @param fetchConfiguration
+     * @return
      * @throws RemoteFetchCoreException
      */
-    void addRemoteFetchConfiguration(RemoteFetchConfiguration fetchConfiguration) throws RemoteFetchCoreException;
+    ValidationReport addRemoteFetchConfiguration(RemoteFetchConfiguration fetchConfiguration) throws RemoteFetchCoreException;
 
     /**
+     *
      * @param fetchConfiguration
+     * @return
      * @throws RemoteFetchCoreException
      */
-    void updateRemoteFetchConfiguration(RemoteFetchConfiguration fetchConfiguration) throws RemoteFetchCoreException;
+    ValidationReport updateRemoteFetchConfiguration(RemoteFetchConfiguration fetchConfiguration) throws RemoteFetchCoreException;
 
     /**
      * @param fetchConfigurationId

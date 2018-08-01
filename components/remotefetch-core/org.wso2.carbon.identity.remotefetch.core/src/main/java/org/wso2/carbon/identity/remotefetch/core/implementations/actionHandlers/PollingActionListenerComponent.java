@@ -18,8 +18,12 @@
 
 package org.wso2.carbon.identity.remotefetch.core.implementations.actionHandlers;
 
+import org.wso2.carbon.identity.remotefetch.common.ui.UIField;
 import org.wso2.carbon.identity.remotefetch.common.actionlistener.ActionListenerBuilder;
 import org.wso2.carbon.identity.remotefetch.common.actionlistener.ActionListenerComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PollingActionListenerComponent implements ActionListenerComponent {
 
@@ -33,5 +37,31 @@ public class PollingActionListenerComponent implements ActionListenerComponent {
     public String getIdentifier() {
 
         return "POLLING";
+    }
+
+    @Override
+    public String getName() {
+
+        return "Frequent Polling";
+    }
+
+    @Override
+    public List<UIField> getUIFields() {
+
+        ArrayList<UIField> fieldList = new ArrayList();
+
+        fieldList.add(new UIField(
+                "frequency", UIField.FIELD_TYPES.TEXT_BOX, "Frequency", "Number of minutes polling should occur",
+                "^\\d+$", "60", true, false, false
+
+        ));
+        fieldList.add(new UIField(
+                "directory", UIField.FIELD_TYPES.TEXT_BOX, "Directory", "Directory that should be polled for changes",
+                "^(((\\/)|(\\.)\\/|(\\.\\.)\\/))*(((\\w+)|(\\.\\.)|(\\.))*\\/)*(\\w*)$",
+                "./", true, false, false
+
+        ));
+
+        return fieldList;
     }
 }

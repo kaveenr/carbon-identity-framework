@@ -18,8 +18,11 @@
 
 package org.wso2.carbon.identity.remotefetch.core.implementations.configDeployers;
 
+import org.wso2.carbon.identity.remotefetch.common.ui.UIField;
 import org.wso2.carbon.identity.remotefetch.common.configdeployer.ConfigDeployerBuilder;
 import org.wso2.carbon.identity.remotefetch.common.configdeployer.ConfigDeployerComponent;
+
+import java.util.List;
 
 public class ServiceProviderConfigDeployerComponent implements ConfigDeployerComponent {
 
@@ -44,4 +47,17 @@ public class ServiceProviderConfigDeployerComponent implements ConfigDeployerCom
 
         return "SP";
     }
+
+    @Override
+    public String getName() {
+
+        return "Service Provider";
+    }
+
+    @Override
+    public List<UIField> getUIFields() {
+
+        return null;
+    }
+
 }
