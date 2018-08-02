@@ -33,12 +33,15 @@ import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchComponentRegistry;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfigurationService;
+import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
 import org.wso2.carbon.identity.remotefetch.core.RemoteFetchComponentRegistryImpl;
 import org.wso2.carbon.identity.remotefetch.core.RemoteFetchConfigurationServiceImpl;
 import org.wso2.carbon.identity.remotefetch.core.RemoteFetchCore;
 import org.wso2.carbon.identity.remotefetch.core.implementations.actionHandlers.PollingActionListenerComponent;
 import org.wso2.carbon.identity.remotefetch.core.implementations.configDeployers.ServiceProviderConfigDeployerComponent;
 import org.wso2.carbon.identity.remotefetch.core.implementations.repositoryHandlers.GitRepositoryManagerComponent;
+import org.wso2.carbon.identity.remotefetch.core.util.RemoteFetchConfigurationParser;
+import org.wso2.carbon.identity.remotefetch.common.RemoteFetchCoreConfiguration;
 import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.concurrent.Executors;
@@ -61,6 +64,7 @@ public class RemoteFetchServiceComponent {
 
         RemoteFetchComponentRegistry remoteFetchComponentRegistry = new RemoteFetchComponentRegistryImpl();
         RemoteFetchConfigurationService remoteFetchConfigurationService = new RemoteFetchConfigurationServiceImpl();
+        RemoteFetchCoreConfiguration fetchCoreConfiguration = this.parseRemoteFetchCoreConfiguration();
 
         remoteFetchComponentRegistry.registerRepositoryManager(new GitRepositoryManagerComponent());
         remoteFetchComponentRegistry.registerConfigDeployer(new ServiceProviderConfigDeployerComponent());
@@ -69,6 +73,7 @@ public class RemoteFetchServiceComponent {
         RemoteFetchServiceComponentHolder.getInstance().setRemoteFetchComponentRegistry(remoteFetchComponentRegistry);
         RemoteFetchServiceComponentHolder.getInstance().setRemoteFetchConfigurationService(remoteFetchConfigurationService);
         RemoteFetchServiceComponentHolder.getInstance().setDataSource(this.getDataSource());
+        RemoteFetchServiceComponentHolder.getInstance().setFetchCoreConfiguration(fetchCoreConfiguration);
 
         BundleContext bundleContext = context.getBundleContext();
         bundleContext.registerService(RemoteFetchComponentRegistry.class.getName(),
@@ -76,12 +81,15 @@ public class RemoteFetchServiceComponent {
         bundleContext.registerService(RemoteFetchConfigurationService.class.getName(),
                 RemoteFetchServiceComponentHolder.getInstance().getRemoteFetchConfigurationService(), null);
 
-        RemoteFetchCore core = new RemoteFetchCore();
-        try {
-            scheduler.scheduleAtFixedRate(core, 0, 60, TimeUnit.SECONDS);
-            log.info("Identity RemoteFetchServiceComponent bundle is activated");
-        } catch (Exception e) {
-            log.error("Error while activating RemoteFetchServiceComponent bundle", e);
+        if(fetchCoreConfiguration.isEnableCore()){
+            RemoteFetchCore core = new RemoteFetchCore();
+            try {
+                //TODO set time to five minutes
+                scheduler.scheduleAtFixedRate(core, 0, 60, TimeUnit.SECONDS);
+                log.info("Identity RemoteFetchServiceComponent bundle is activated");
+            } catch (Exception e) {
+                log.error("Error while activating RemoteFetchServiceComponent bundle", e);
+            }
         }
     }
 
@@ -149,5 +157,14 @@ public class RemoteFetchServiceComponent {
     private DataSource getDataSource() {
 
         return IdentityDatabaseUtil.getDataSource();
+    }
+
+    private RemoteFetchCoreConfiguration parseRemoteFetchCoreConfiguration(){
+        try {
+            return RemoteFetchConfigurationParser.parseConfiguration();
+        } catch (RemoteFetchCoreException e){
+            log.error("Error parsing RemoteFetchCoreConfiguration, Core disabled",e);
+            return new RemoteFetchCoreConfiguration(null,false);
+        }
     }
 }

@@ -38,6 +38,7 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.wso2.carbon.identity.remotefetch.common.ConfigurationFileStream;
 import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManager;
+import org.wso2.carbon.identity.remotefetch.core.internal.RemoteFetchServiceComponentHolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,12 +58,12 @@ public class GitRepositoryManager implements RepositoryManager {
     private Repository repo;
     private Git git;
 
-    public GitRepositoryManager(String name, String uri, String branch) {
+    public GitRepositoryManager(String name, String uri, String branch, File workingDir) {
 
         this.name = name;
         this.branch = branch;
         this.uri = uri;
-        this.repoPath = new File(System.getProperty("java.io.tmpdir") + this.name);
+        this.repoPath = new File(workingDir, this.name);
 
         // Check if repository path exists, if so load as local repository
         try {

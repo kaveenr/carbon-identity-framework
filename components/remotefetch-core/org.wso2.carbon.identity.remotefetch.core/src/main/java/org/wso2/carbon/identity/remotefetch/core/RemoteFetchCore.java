@@ -82,7 +82,11 @@ public class RemoteFetchCore implements Runnable {
                 RepositoryManagerBuilder repositoryManagerBuilder = repositoryManagerComponent
                         .getRepositoryManagerBuilder();
 
-                repositoryManager = repositoryManagerBuilder.addRemoteFetchConfig(fetchConfig).build();
+                repositoryManager = repositoryManagerBuilder.addRemoteFetchConfig(fetchConfig)
+                        .addRemoteFetchCoreConfig(RemoteFetchServiceComponentHolder.getInstance()
+                                .getFetchCoreConfiguration())
+                        .build();
+
             } catch (RepositoryManagerBuilderException e) {
                 throw new RemoteFetchCoreException("Unable to build " + fetchConfig.getRepositoryManagerType()
                         + " RepositoryManager", e);

@@ -48,6 +48,7 @@ public class GitRepositoryManagerBuilder extends RepositoryManagerBuilder {
             throw new RepositoryManagerBuilderException("No branch specified in RemoteFetchConfiguration Repository");
         }
 
-        return new GitRepositoryManager("repo-" + this.fetchConfig.getRemoteFetchConfigurationId(), uri, branch);
+        return new GitRepositoryManager("repo-" + this.fetchConfig.getRemoteFetchConfigurationId()
+                , uri, branch, this.fetchCoreConfiguration.getWorkingDirectory());
     }
 }
