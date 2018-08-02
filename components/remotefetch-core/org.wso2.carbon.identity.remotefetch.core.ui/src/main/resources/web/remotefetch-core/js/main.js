@@ -106,7 +106,11 @@ function validateForms() {
 function serializeForm(selector) {
     var payload = {};
     $($(selector).serializeArray()).each(function (i, value) {
-        payload[value.name] = value.value;
+        if(typeof value.value === "string") {
+            payload[value.name] = value.value.replace(/"/g, '');
+        }else{
+            payload[value.name] = value.value;
+        }
     });
     return payload;
 }
