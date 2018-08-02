@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.remotefetch.core.dao.impl;
 
 import org.wso2.carbon.database.utils.jdbc.JdbcTemplate;
 import org.wso2.carbon.database.utils.jdbc.exceptions.TransactionException;
+import org.wso2.carbon.identity.remotefetch.common.BasicRemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.core.constants.SQLConstants;
@@ -28,6 +29,8 @@ import org.wso2.carbon.identity.remotefetch.core.dao.RemoteFetchConfigurationDAO
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,6 +187,40 @@ public class RemoteFetchConfigurationDAOImpl implements RemoteFetchConfiguration
             );
         } catch (TransactionException e) {
             throw new RemoteFetchCoreException("Error listing RemoteFetchConfigurations from database", e);
+        }
+    }
+
+    /**
+     * @param tenant_id
+     * @return
+     * @throws RemoteFetchCoreException
+     */
+    @Override
+    public List<BasicRemoteFetchConfiguration> getBasicRemoteFetchConfigurationsByTenant(int tenant_id) throws RemoteFetchCoreException {
+
+        JdbcTemplate jdbcTemplate = JdbcUtils.getNewTemplate();
+        try {
+            return jdbcTemplate.withTransaction(template ->
+                    template.executeQuery(SQLConstants.LIST_BASIC_CONFIGS_BY_TENANT,
+                            ((resultSet, i) ->{
+                                BasicRemoteFetchConfiguration obj = new BasicRemoteFetchConfiguration(
+                                    resultSet.getInt(1),
+                                    resultSet.getString(2).equals("1"),
+                                    resultSet.getString(3),
+                                    resultSet.getString(4),
+                                    resultSet.getString(5),
+                                    resultSet.getInt(6),
+                                    resultSet.getInt(7));
+                                Timestamp lastDeployed = resultSet.getTimestamp(8);
+                                if(lastDeployed != null){
+                                    obj.setLastDeployed(new Date(lastDeployed.getTime()));
+                                }
+                                return obj;
+                            })
+                            , preparedStatement -> preparedStatement.setInt(1, tenant_id))
+            );
+        } catch (TransactionException e) {
+            throw new RemoteFetchCoreException("Error listing BasicRemoteFetchConfigurations from database", e);
         }
     }
 

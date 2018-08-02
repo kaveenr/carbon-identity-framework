@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.remotefetch.core.dao;
 
+import org.wso2.carbon.identity.remotefetch.common.BasicRemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfiguration;
 
@@ -72,5 +73,13 @@ public interface RemoteFetchConfigurationDAO {
      * @throws RemoteFetchCoreException
      */
     List<RemoteFetchConfiguration> getRemoteFetchConfigurationsByTenant(int tenant_id) throws RemoteFetchCoreException;
+
+    /**
+     * @param tenant_id
+     * @return
+     * @throws RemoteFetchCoreException
+     */
+    List<BasicRemoteFetchConfiguration> getBasicRemoteFetchConfigurationsByTenant(int tenant_id)
+            throws RemoteFetchCoreException;
 
 }

@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.remotefetch.core;
 
+import org.wso2.carbon.identity.remotefetch.common.BasicRemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfigurationService;
 import org.wso2.carbon.identity.remotefetch.common.ValidationReport;
@@ -98,6 +99,17 @@ public class RemoteFetchConfigurationServiceImpl implements RemoteFetchConfigura
     public List<RemoteFetchConfiguration> getRemoteFetchConfigurationList(int tenant_id) throws RemoteFetchCoreException {
 
         return this.fetchConfigurationDAO.getRemoteFetchConfigurationsByTenant(tenant_id);
+    }
+
+    /**
+     * @param tenant_id
+     * @return
+     * @throws RemoteFetchCoreException
+     */
+    @Override
+    public List<BasicRemoteFetchConfiguration> getBasicRemoteFetchConfigurationList(int tenant_id) throws RemoteFetchCoreException {
+
+        return this.fetchConfigurationDAO.getBasicRemoteFetchConfigurationsByTenant(tenant_id);
     }
 
     /**

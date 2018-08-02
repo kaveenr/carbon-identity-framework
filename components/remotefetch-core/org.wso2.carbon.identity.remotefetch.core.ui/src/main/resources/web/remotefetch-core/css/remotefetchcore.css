@@ -41,3 +41,13 @@
 .enabled-cell {
     width: 60px;
 }
+
+.remote-fetch-failed {
+    color: red;
+    font-weight: bold;
+}
+
+.remote-fetch-passed {
+    color: green;
+    font-weight: bold;
+}

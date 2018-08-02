@@ -74,7 +74,7 @@ public class RemoteFetchServiceComponent {
         bundleContext.registerService(RemoteFetchComponentRegistry.class.getName(),
                 RemoteFetchServiceComponentHolder.getInstance().getRemoteFetchComponentRegistry(), null);
         bundleContext.registerService(RemoteFetchConfigurationService.class.getName(),
-                RemoteFetchServiceComponentHolder.getInstance().getRemoteFetchConfigurationService(),null);
+                RemoteFetchServiceComponentHolder.getInstance().getRemoteFetchConfigurationService(), null);
 
         RemoteFetchCore core = new RemoteFetchCore();
         try {
@@ -146,8 +146,8 @@ public class RemoteFetchServiceComponent {
          is started */
     }
 
+    private DataSource getDataSource() {
 
-    private DataSource getDataSource(){
         return IdentityDatabaseUtil.getDataSource();
     }
 }

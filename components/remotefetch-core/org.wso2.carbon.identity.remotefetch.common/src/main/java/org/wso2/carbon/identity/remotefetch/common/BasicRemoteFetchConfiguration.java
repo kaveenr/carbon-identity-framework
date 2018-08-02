@@ -16,33 +16,35 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.remotefetch.core.ui.dto;
+package org.wso2.carbon.identity.remotefetch.common;
 
 import java.util.Date;
 
-public class RemoteFetchConfigurationRowDTO {
+/**
+ * Holds RemoteFetch Configuration Data and related deployment data
+ */
+public class BasicRemoteFetchConfiguration {
 
     private int id;
     private boolean isEnabled;
-    private String repositoryType;
+    private String repositoryManagerType;
     private String actionListenerType;
     private String configurationDeployerType;
     private int successfulDeployments;
     private int failedDeployments;
-    private Date lastDeployed;
+    private Date lastDeployed = null;
 
-    public RemoteFetchConfigurationRowDTO(int id, boolean isEnabled, String repositoryType,
-                                          String actionListenerType, String configarationDeployerType
-            , int successfulDeployments, int failedDeployments, Date lastDeployed) {
+    public BasicRemoteFetchConfiguration(int id, boolean isEnabled, String repositoryManagerType,
+                                         String actionListenerType, String configurationDeployerType,
+                                         int successfulDeployments, int failedDeployments) {
 
         this.id = id;
         this.isEnabled = isEnabled;
-        this.repositoryType = repositoryType;
+        this.repositoryManagerType = repositoryManagerType;
         this.actionListenerType = actionListenerType;
-        this.configurationDeployerType = configarationDeployerType;
+        this.configurationDeployerType = configurationDeployerType;
         this.successfulDeployments = successfulDeployments;
         this.failedDeployments = failedDeployments;
-        this.lastDeployed = lastDeployed;
     }
 
     public int getId() {
@@ -50,14 +52,14 @@ public class RemoteFetchConfigurationRowDTO {
         return id;
     }
 
-    public boolean getIsEnabled() {
+    public boolean isEnabled() {
 
         return isEnabled;
     }
 
-    public String getRepositoryType() {
+    public String getRepositoryManagerType() {
 
-        return repositoryType;
+        return repositoryManagerType;
     }
 
     public String getActionListenerType() {
@@ -85,18 +87,8 @@ public class RemoteFetchConfigurationRowDTO {
         return lastDeployed;
     }
 
-    @Override
-    public String toString() {
+    public void setLastDeployed(Date lastDeployed) {
 
-        return "RemoteFetchConfigurationRowDTO{" +
-                "id=" + id +
-                ", isEnabled=" + isEnabled +
-                ", repositoryType='" + repositoryType + '\'' +
-                ", actionListenerType='" + actionListenerType + '\'' +
-                ", configurationDeployerType='" + configurationDeployerType + '\'' +
-                ", successfulDeployments=" + successfulDeployments +
-                ", failedDeployments=" + failedDeployments +
-                ", lastDeployed=" + lastDeployed +
-                '}';
+        this.lastDeployed = lastDeployed;
     }
 }

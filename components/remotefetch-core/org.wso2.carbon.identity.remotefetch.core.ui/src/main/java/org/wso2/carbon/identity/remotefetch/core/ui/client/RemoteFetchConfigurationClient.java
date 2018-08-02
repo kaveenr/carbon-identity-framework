@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.remotefetch.core.ui.client;
 
 import com.google.gson.Gson;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.identity.remotefetch.common.BasicRemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.common.RemoteFetchConfiguration;
 import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
 import org.wso2.carbon.identity.remotefetch.common.ValidationReport;
@@ -35,15 +36,15 @@ public class RemoteFetchConfigurationClient {
 
         int tenant_id = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 
-        List<RemoteFetchConfiguration> fetchConfigurations = RemotefetchCoreUIComponentDataHolder
-                .getInstance().getRemoteFetchConfigurationService().getRemoteFetchConfigurationList(tenant_id);
+        List<BasicRemoteFetchConfiguration> fetchConfigurations = RemotefetchCoreUIComponentDataHolder
+                .getInstance().getRemoteFetchConfigurationService().getBasicRemoteFetchConfigurationList(tenant_id);
 
-        return fetchConfigurations.stream().map((fetchConfiguration ->
-                RemoteFetchConfigurationClient.fetchConfigurationToDTO(fetchConfiguration)
+        return fetchConfigurations.stream().map((basicFetchConfiguration ->
+                RemoteFetchConfigurationClient.fetchConfigurationToDTO(basicFetchConfiguration)
         )).collect(Collectors.toList());
     }
 
-    public static RemoteFetchConfigurationRowDTO fetchConfigurationToDTO(RemoteFetchConfiguration fetchConfiguration) {
+    public static RemoteFetchConfigurationRowDTO fetchConfigurationToDTO(BasicRemoteFetchConfiguration fetchConfiguration) {
 
         String repositoryManager = RemotefetchCoreUIComponentDataHolder.getInstance().getComponentRegistry().
                 getRepositoryManagerComponent(fetchConfiguration.getRepositoryManagerType()).getName();
@@ -55,12 +56,14 @@ public class RemoteFetchConfigurationClient {
                 getConfigDeployerComponent(fetchConfiguration.getConfigurationDeployerType()).getName();
 
         return new RemoteFetchConfigurationRowDTO(
-                fetchConfiguration.getRemoteFetchConfigurationId(),
+                fetchConfiguration.getId(),
                 fetchConfiguration.isEnabled(),
                 repositoryManager,
                 actionListener,
                 configurationDeployer,
-                fetchConfiguration.getUserName()
+                fetchConfiguration.getSuccessfulDeployments(),
+                fetchConfiguration.getFailedDeployments(),
+                fetchConfiguration.getLastDeployed()
         );
     }
 

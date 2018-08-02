@@ -17,7 +17,7 @@
   --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="carbon" uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" %>
 <%@ taglib prefix="e" uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project" %>
 
@@ -54,7 +54,8 @@
                             <th class="leftCol-med enabled-cell"><fmt:message key="field.config.enabled"/></th>
                             <th class="leftCol-med"><fmt:message key="field.config.name"/></th>
                             <th class="leftCol-med"><fmt:message key="field.config.repositoryType"/></th>
-                            <th class="leftCol-med"><fmt:message key="field.config.actionListnerType"/></th>
+                            <th class="leftCol-med"><fmt:message key="field.config.actionListenerType"/></th>
+                            <th class="leftCol-med"><fmt:message key="field.config.status"/></th>
                             <th class="leftCol-med"><fmt:message key="field.config.action"/></th>
                         </tr>
                         </thead>
@@ -65,9 +66,26 @@
                                         <td class="text-center">
                                             <input type="checkbox" disabled ${configuration.isEnabled ? "checked" : ""}>
                                         </td>
-                                        <td>${configuration.configarationDeployerType} Deployer</td>
+                                        <td>${configuration.configurationDeployerType} Deployer</td>
                                         <td>${configuration.repositoryType}</td>
-                                        <td>${configuration.actionListnerType}</td>
+                                        <td>${configuration.actionListenerType}</td>
+                                        <td class="text-center">
+                                            <c:if test="${empty configuration.lastDeployed}">
+                                                <p>No Prior Deployments</p>
+                                            </c:if>
+                                            <c:if test="${not empty configuration.lastDeployed}">
+                                                <c:if test="${configuration.successfulDeployments != 0}">
+                                                    <p class="remote-fetch-passed" title="<fmt:formatDate type = "both" dateStyle = "long" timeStyle = "short" value="${configuration.lastDeployed}"/>">
+                                                        Deployed : ${configuration.successfulDeployments}
+                                                    </p>
+                                                </c:if>
+                                                <c:if test="${configuration.failedDeployments != 0}">
+                                                    <p class="remote-fetch-failed" title="<fmt:formatDate type = "both" dateStyle = "long" timeStyle = "short" value="${configuration.lastDeployed}"/>">
+                                                        Deployments Failed : ${configuration.failedDeployments}
+                                                    </p>
+                                                </c:if>
+                                            </c:if>
+                                        </td>
                                         <td style="width: 100px; white-space: nowrap;">
                                             <a title="Edit Configuration"
                                                 href="add-remotefetch-config.jsp?id=<e:forUri value="${configuration.id}"/>"

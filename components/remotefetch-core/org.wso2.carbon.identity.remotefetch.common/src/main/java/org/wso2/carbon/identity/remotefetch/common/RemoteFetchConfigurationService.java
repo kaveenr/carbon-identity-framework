@@ -28,7 +28,6 @@ import java.util.List;
 public interface RemoteFetchConfigurationService {
 
     /**
-     *
      * @param fetchConfiguration
      * @return
      * @throws RemoteFetchCoreException
@@ -36,7 +35,6 @@ public interface RemoteFetchConfigurationService {
     ValidationReport addRemoteFetchConfiguration(RemoteFetchConfiguration fetchConfiguration) throws RemoteFetchCoreException;
 
     /**
-     *
      * @param fetchConfiguration
      * @return
      * @throws RemoteFetchCoreException
@@ -56,6 +54,14 @@ public interface RemoteFetchConfigurationService {
      * @throws RemoteFetchCoreException
      */
     List<RemoteFetchConfiguration> getRemoteFetchConfigurationList(int tenant_id) throws RemoteFetchCoreException;
+
+    /**
+     * @param tenant_id
+     * @return
+     * @throws RemoteFetchCoreException
+     */
+    List<BasicRemoteFetchConfiguration> getBasicRemoteFetchConfigurationList(int tenant_id)
+            throws RemoteFetchCoreException;
 
     /**
      * @return All Remote Fetch Configurations
