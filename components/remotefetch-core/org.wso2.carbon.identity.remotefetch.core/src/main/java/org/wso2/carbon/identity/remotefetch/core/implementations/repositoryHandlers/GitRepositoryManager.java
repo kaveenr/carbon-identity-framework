@@ -38,7 +38,6 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.wso2.carbon.identity.remotefetch.common.ConfigurationFileStream;
 import org.wso2.carbon.identity.remotefetch.common.exceptions.RemoteFetchCoreException;
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManager;
-import org.wso2.carbon.identity.remotefetch.core.internal.RemoteFetchServiceComponentHolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,15 +54,17 @@ public class GitRepositoryManager implements RepositoryManager {
     private String branch = "";
     private String name = "";
     private File repoPath;
+    private File fileRoot;
     private Repository repo;
     private Git git;
 
-    public GitRepositoryManager(String name, String uri, String branch, File workingDir) {
+    public GitRepositoryManager(String name, String uri, String branch, File directory, File workingDir) {
 
         this.name = name;
         this.branch = branch;
         this.uri = uri;
         this.repoPath = new File(workingDir, this.name);
+        this.fileRoot = directory;
 
         // Check if repository path exists, if so load as local repository
         try {
@@ -129,6 +130,10 @@ public class GitRepositoryManager implements RepositoryManager {
     @Override
     public ConfigurationFileStream getFile(File location) throws RemoteFetchCoreException {
 
+        if(!this.isFileInSubDirectory(this.fileRoot,location)){
+            throw new RemoteFetchCoreException("Requested file doesn't share repository root");
+        }
+
         try (ObjectReader reader = this.repo.newObjectReader()) {
             RevCommit commit = this.getLastCommit(location);
             TreeWalk treewalk = TreeWalk.forPath(this.repo, location.getPath(), commit.getTree());
@@ -164,12 +169,12 @@ public class GitRepositoryManager implements RepositoryManager {
         }
     }
 
-    public List<File> listFiles(File root) throws RemoteFetchCoreException {
+    public List<File> listFiles() throws RemoteFetchCoreException {
 
         List<File> availableFiles = new ArrayList<>();
 
         TreeWalk treeWalk = new TreeWalk(this.repo);
-        TreeFilter pathFilter = PathFilter.create(root.getPath());
+        TreeFilter pathFilter = PathFilter.create(this.fileRoot.getPath());
 
         RevWalk revWalk = new RevWalk(this.repo);
         ObjectId headRef;
@@ -195,5 +200,15 @@ public class GitRepositoryManager implements RepositoryManager {
         } catch (IOException e) {
             throw new RemoteFetchCoreException("Exception on traversing for give path", e);
         }
+    }
+
+    private boolean isFileInSubDirectory(File baseDir, File path){
+        if(path == null){
+            return false;
+        }
+        if(path.equals(baseDir)){
+            return true;
+        }
+        return isFileInSubDirectory(baseDir,path.getParentFile());
     }
 }

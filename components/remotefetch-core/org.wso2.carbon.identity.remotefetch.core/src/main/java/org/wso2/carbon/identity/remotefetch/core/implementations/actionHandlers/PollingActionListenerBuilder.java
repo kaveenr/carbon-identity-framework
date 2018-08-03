@@ -22,7 +22,6 @@ import org.wso2.carbon.identity.remotefetch.common.actionlistener.ActionListener
 import org.wso2.carbon.identity.remotefetch.common.actionlistener.ActionListenerBuilder;
 import org.wso2.carbon.identity.remotefetch.common.actionlistener.ActionListenerBuilderException;
 
-import java.io.File;
 import java.util.Map;
 
 public class PollingActionListenerBuilder extends ActionListenerBuilder {
@@ -33,7 +32,6 @@ public class PollingActionListenerBuilder extends ActionListenerBuilder {
         Map<String, String> actionListenerAttributes = this.fetchConfig.getActionListenerAttributes();
         int frequency;
 
-        File directory;
         if (actionListenerAttributes.containsKey("frequency")) {
             try {
                 frequency = Integer.parseInt(actionListenerAttributes.get("frequency"));
@@ -44,13 +42,7 @@ public class PollingActionListenerBuilder extends ActionListenerBuilder {
             throw new ActionListenerBuilderException("Frequency not available in configuration");
         }
 
-        if (actionListenerAttributes.containsKey("directory")) {
-            directory = new File(actionListenerAttributes.get("directory"));
-        } else {
-            throw new ActionListenerBuilderException("Directory not available in configuration");
-        }
-
-        return new PollingActionListener(this.repoConnector, directory,
-                this.configDeployer, frequency, this.fetchConfig.getRemoteFetchConfigurationId());
+        return new PollingActionListener(this.repoConnector, this.configDeployer, frequency,
+                this.fetchConfig.getRemoteFetchConfigurationId());
     }
 }

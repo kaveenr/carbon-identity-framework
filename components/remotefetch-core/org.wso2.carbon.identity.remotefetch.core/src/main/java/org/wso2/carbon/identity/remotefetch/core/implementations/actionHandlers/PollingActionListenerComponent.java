@@ -55,12 +55,6 @@ public class PollingActionListenerComponent implements ActionListenerComponent {
                 "^\\d+$", "60", true, false, false
 
         ));
-        fieldList.add(new UIField(
-                "directory", UIField.FIELD_TYPES.TEXT_BOX, "Directory", "Directory that should be polled for changes",
-                "^(((\\/)|(\\.)\\/|(\\.\\.)\\/))*(((\\w+)|(\\.\\.)|(\\.))*\\/)*(\\w*)$",
-                "./", true, false, false
-
-        ));
 
         return fieldList;
     }

@@ -62,6 +62,12 @@ public class GitRepositoryManagerComponent implements RepositoryManagerComponent
                 "master", true, false, false
 
         ));
+        fieldList.add(new UIField(
+                "directory", UIField.FIELD_TYPES.TEXT_BOX, "Directory", "Directory of target files",
+                "^(((\\/)|(\\.)\\/|(\\.\\.)\\/))*(((\\w+)|(\\.\\.)|(\\.))*\\/)*(\\w*)$",
+                "./", true, false, false
+
+        ));
 
         return fieldList;
     }

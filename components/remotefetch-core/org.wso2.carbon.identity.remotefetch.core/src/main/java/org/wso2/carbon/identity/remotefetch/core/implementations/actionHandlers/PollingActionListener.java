@@ -47,17 +47,15 @@ public class PollingActionListener implements ActionListener {
     private RepositoryManager repo;
     private Integer frequency;
     private Date lastIteration;
-    private File path;
     private ConfigDeployer configDeployer;
     private DeploymentRevisionDAO deploymentRevisionDAO;
     private Map<String, DeploymentRevision> deploymentRevisionMap = new HashMap<>();
     private int remoteFetchConfigurationId;
 
-    public PollingActionListener(RepositoryManager repo, File path, ConfigDeployer configDeployer,
+    public PollingActionListener(RepositoryManager repo, ConfigDeployer configDeployer,
                                  int frequency, int remoteFetchConfigurationId) {
 
         this.repo = repo;
-        this.path = path;
         this.configDeployer = configDeployer;
         this.frequency = frequency;
         this.remoteFetchConfigurationId = remoteFetchConfigurationId;
@@ -161,25 +159,23 @@ public class PollingActionListener implements ActionListener {
                 log.error("Error pulling repository", e);
             }
 
-            this.pollDirectory(this.path, this.configDeployer);
+            this.pollDirectory(this.configDeployer);
             this.lastIteration = new Date();
         }
     }
 
     /**
-     * Poll directory for new files for given root
-     *
-     * @param path
+     * Poll directory for new files
      * @param deployer
      */
-    private void pollDirectory(File path, ConfigDeployer deployer) {
+    private void pollDirectory(ConfigDeployer deployer) {
 
         List<File> configFiles = null;
 
         try {
-            configFiles = this.repo.listFiles(path);
+            configFiles = this.repo.listFiles();
         } catch (RemoteFetchCoreException e) {
-            log.error("Error listing files at " + path.getAbsolutePath(), e);
+            log.error("Error listing files from repository", e);
             return;
         }
 

@@ -22,6 +22,7 @@ import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManager
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManagerBuilder;
 import org.wso2.carbon.identity.remotefetch.common.repomanager.RepositoryManagerBuilderException;
 
+import java.io.File;
 import java.util.Map;
 
 public class GitRepositoryManagerBuilder extends RepositoryManagerBuilder {
@@ -35,6 +36,7 @@ public class GitRepositoryManagerBuilder extends RepositoryManagerBuilder {
 
         String branch;
         String uri;
+        File directory;
 
         if (repoAttributes.containsKey("uri")) {
             uri = repoAttributes.get("uri");
@@ -48,7 +50,13 @@ public class GitRepositoryManagerBuilder extends RepositoryManagerBuilder {
             throw new RepositoryManagerBuilderException("No branch specified in RemoteFetchConfiguration Repository");
         }
 
+        if (repoAttributes.containsKey("directory")) {
+            directory = new File(repoAttributes.get("directory"));
+        } else {
+            throw new RepositoryManagerBuilderException("Directory not available in configuration");
+        }
+
         return new GitRepositoryManager("repo-" + this.fetchConfig.getRemoteFetchConfigurationId()
-                , uri, branch, this.fetchCoreConfiguration.getWorkingDirectory());
+                , uri, branch, directory, this.fetchCoreConfiguration.getWorkingDirectory());
     }
 }
